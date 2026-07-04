@@ -1,0 +1,33 @@
+services:
+  app:
+    build:
+      context: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://dashboard:dashboard@db:5432/personal_dashboard
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: personal_dashboard
+      POSTGRES_USER: dashboard
+      POSTGRES_PASSWORD: dashboard
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dashboard -d personal_dashboard"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+    volumes:
+      - dashboard_postgres:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    restart: unless-stopped
+
+volumes:
+  dashboard_postgres:

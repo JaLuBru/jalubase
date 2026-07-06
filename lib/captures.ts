@@ -61,6 +61,21 @@ export async function getCapture(id: string): Promise<Capture | null> {
   return result.rows[0] ?? null;
 }
 
+export async function listDueCaptures(): Promise<Capture[]> {
+  const pool = getPool();
+  const result = await pool.query<Capture>(
+    `select *
+     from captures
+     where resurface_on is not null
+       and resurface_on <= current_date
+       and status != 'archived'
+     order by resurface_on asc, created_at desc
+     limit 12`
+  );
+
+  return result.rows;
+}
+
 export async function createCapture(input: z.infer<typeof captureInputSchema>) {
   const pool = getPool();
   const tags = input.tags
@@ -96,6 +111,18 @@ export async function updateCaptureStatus(id: string, status: CaptureStatus) {
          updated_at = now()
      where id = $1`,
     [id, status]
+  );
+}
+
+export async function updateCaptureResurface(id: string, resurfaceOn: string | null) {
+  const pool = getPool();
+
+  await pool.query(
+    `update captures
+     set resurface_on = $2,
+         updated_at = now()
+     where id = $1`,
+    [id, resurfaceOn]
   );
 }
 

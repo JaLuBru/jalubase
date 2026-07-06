@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getPool } from "@/lib/db";
-import { captureTypes, domains, type Capture } from "@/lib/types";
+import { captureTypes, domains, type Capture, type CaptureStatus } from "@/lib/types";
 
 export const captureInputSchema = z.object({
   title: z.string().trim().max(160).optional(),
@@ -12,28 +12,49 @@ export const captureInputSchema = z.object({
   resurfaceOn: z.string().optional().or(z.literal(""))
 });
 
-export async function listCaptures(query?: string): Promise<Capture[]> {
+export async function listCaptures(
+  query?: string,
+  status?: CaptureStatus | "all"
+): Promise<Capture[]> {
   const pool = getPool();
   const hasQuery = Boolean(query?.trim());
+  const hasStatus = Boolean(status && status !== "all");
 
+  const conditions: string[] = [];
+  const values: string[] = [];
+
+  if (hasQuery && query) {
+    values.push(`%${query}%`, query);
+    conditions.push(
+      `(body ilike $1 or title ilike $1 or source_url ilike $1 or $2 = any(tags))`
+    );
+  }
+
+  if (hasStatus && status) {
+    values.push(status);
+    conditions.push(`status = $${values.length}`);
+  }
+
+  const whereClause = conditions.length ? `where ${conditions.join(" and ")}` : "";
   const result = await pool.query<Capture>(
-    hasQuery
-      ? `select *
-         from captures
-         where body ilike $1
-            or title ilike $1
-            or source_url ilike $1
-            or $2 = any(tags)
-         order by created_at desc
-         limit 50`
-      : `select *
-         from captures
-         order by created_at desc
-         limit 50`,
-    hasQuery ? [`%${query}%`, query] : []
+    `select *
+     from captures
+     ${whereClause}
+     order by created_at desc
+     limit 50`,
+    values
   );
 
   return result.rows;
+}
+
+export async function getCapture(id: string): Promise<Capture | null> {
+  const pool = getPool();
+  const result = await pool.query<Capture>("select * from captures where id = $1", [
+    id
+  ]);
+
+  return result.rows[0] ?? null;
 }
 
 export async function createCapture(input: z.infer<typeof captureInputSchema>) {
@@ -59,5 +80,17 @@ export async function createCapture(input: z.infer<typeof captureInputSchema>) {
       tags,
       input.resurfaceOn || null
     ]
+  );
+}
+
+export async function updateCaptureStatus(id: string, status: CaptureStatus) {
+  const pool = getPool();
+
+  await pool.query(
+    `update captures
+     set status = $2,
+         updated_at = now()
+     where id = $1`,
+    [id, status]
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import "./styles.css";
 
 export const metadata: Metadata = {
@@ -6,28 +7,34 @@ export const metadata: Metadata = {
   description: "A low-friction capture and memory dashboard."
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const savedTheme = cookieStore.get("theme")?.value;
+  const theme = savedTheme === "dark" || savedTheme === "light" ? savedTheme : "dark";
   const themeScript = `
     try {
-      const savedTheme = window.localStorage.getItem("theme");
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const theme = savedTheme === "dark" || savedTheme === "light"
-        ? savedTheme
-        : prefersDark
-          ? "dark"
-          : "light";
+      const cookieTheme = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("theme="))
+        ?.split("=")[1];
+      const storedTheme = window.localStorage.getItem("theme");
+      const theme = cookieTheme === "dark" || cookieTheme === "light"
+        ? cookieTheme
+        : storedTheme === "dark" || storedTheme === "light"
+          ? storedTheme
+          : "${theme}";
       document.documentElement.dataset.theme = theme;
     } catch {
-      document.documentElement.dataset.theme = "light";
+      document.documentElement.dataset.theme = "${theme}";
     }
   `;
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-theme={theme} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

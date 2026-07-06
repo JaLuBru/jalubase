@@ -252,6 +252,16 @@ button:hover {
   background: var(--surface);
 }
 
+.danger-button {
+  border: 1px solid color-mix(in srgb, var(--warn) 60%, var(--line));
+  background: transparent;
+  color: var(--warn);
+}
+
+.danger-button:hover {
+  background: color-mix(in srgb, var(--warn) 14%, transparent);
+}
+
 .theme-toggle {
   min-height: 34px;
   border: 1px solid var(--line);
@@ -397,6 +407,16 @@ button:disabled {
   color: var(--accent);
 }
 
+.text-link {
+  color: var(--accent);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -419,6 +439,10 @@ button:disabled {
 
 .detail-panel h1 {
   font-size: clamp(2rem, 4vw, 3.4rem);
+}
+
+.edit-form {
+  padding: 0;
 }
 
 .detail-body {

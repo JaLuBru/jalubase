@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { changeCaptureStatusAndReturn } from "@/app/actions";
 import { DeleteCaptureButton } from "@/app/delete-capture-button";
+import { ResurfaceActions } from "@/app/resurface-actions";
 import { getCapture } from "@/lib/captures";
 
 type CaptureDetailProps = {
@@ -66,6 +67,11 @@ export default async function CaptureDetail({ params }: CaptureDetailProps) {
             <dd>{capture.tags.length ? capture.tags.join(", ") : "None yet"}</dd>
           </div>
         </dl>
+
+        <section className="resurface-panel">
+          <h2>Resurface</h2>
+          <ResurfaceActions id={capture.id} />
+        </section>
 
         <div className="card-actions">
           <a href={`/captures/${capture.id}/edit`}>Edit</a>

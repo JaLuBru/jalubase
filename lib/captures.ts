@@ -12,6 +12,10 @@ export const captureInputSchema = z.object({
   resurfaceOn: z.string().optional().or(z.literal(""))
 });
 
+export const captureUpdateSchema = captureInputSchema.extend({
+  id: z.string().uuid()
+});
+
 export async function listCaptures(
   query?: string,
   status?: CaptureStatus | "all"
@@ -93,4 +97,42 @@ export async function updateCaptureStatus(id: string, status: CaptureStatus) {
      where id = $1`,
     [id, status]
   );
+}
+
+export async function updateCapture(input: z.infer<typeof captureUpdateSchema>) {
+  const pool = getPool();
+  const tags = input.tags
+    ? input.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+    : [];
+
+  await pool.query(
+    `update captures
+     set title = $2,
+         body = $3,
+         capture_type = $4,
+         domain = $5,
+         source_url = $6,
+         tags = $7,
+         resurface_on = $8,
+         updated_at = now()
+     where id = $1`,
+    [
+      input.id,
+      input.title || null,
+      input.body,
+      input.captureType,
+      input.domain,
+      input.sourceUrl || null,
+      tags,
+      input.resurfaceOn || null
+    ]
+  );
+}
+
+export async function deleteCapture(id: string) {
+  const pool = getPool();
+  await pool.query("delete from captures where id = $1", [id]);
 }

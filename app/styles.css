@@ -1,41 +1,43 @@
 :root {
   color-scheme: light;
-  --bg: #f7f4ef;
-  --surface: #fffaf2;
+  --bg: #f3f2ef;
+  --surface: #faf8f4;
   --surface-strong: #ffffff;
-  --ink: #1f2933;
-  --muted: #6b7280;
-  --line: #ded8cf;
-  --field-label: #374151;
-  --body-copy: #4b5563;
-  --tag-bg: #edf7f5;
-  --tag-border: #cbd8d5;
-  --tag-ink: #245650;
-  --accent: #126b62;
-  --accent-strong: #0c4f49;
-  --warn: #8a3d18;
+  --ink: #262626;
+  --muted: #73706b;
+  --line: #ddd8cf;
+  --field-label: #3f3d39;
+  --body-copy: #55514b;
+  --tag-bg: #f4ebe1;
+  --tag-border: #e6d3bf;
+  --tag-ink: #7b4d25;
+  --accent: #a6622a;
+  --accent-strong: #8f4f1d;
+  --warn: #a34725;
   --ok: #217a3e;
-  --shadow: 0 18px 60px rgba(31, 41, 51, 0.09);
+  --button-ink: #ffffff;
+  --shadow: 0 18px 60px rgba(38, 38, 38, 0.08);
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #101416;
-  --surface: #171d20;
-  --surface-strong: #1f272b;
-  --ink: #eef3f1;
-  --muted: #a4b0ad;
-  --line: #334044;
-  --field-label: #d5dedb;
-  --body-copy: #c4cfcc;
-  --tag-bg: #203533;
-  --tag-border: #3f6762;
-  --tag-ink: #b9eee6;
-  --accent: #5fc7b8;
-  --accent-strong: #83ddcf;
-  --warn: #f2a86f;
-  --ok: #89dda2;
-  --shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  --bg: #141414;
+  --surface: #1b1b1b;
+  --surface-strong: #232323;
+  --ink: #eeeeea;
+  --muted: #aaa49b;
+  --line: #35332f;
+  --field-label: #d6d0c7;
+  --body-copy: #c8c2b9;
+  --tag-bg: #302820;
+  --tag-border: #594433;
+  --tag-ink: #dfad7e;
+  --accent: #c5844a;
+  --accent-strong: #d89a61;
+  --warn: #d37d5b;
+  --ok: #93c47d;
+  --button-ink: #1a120c;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
 }
 
 * {
@@ -60,9 +62,9 @@ main {
 .intro {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 32px;
-  align-items: end;
-  margin-bottom: 28px;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .eyebrow {
@@ -79,11 +81,6 @@ main {
   gap: 16px;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.topline .eyebrow {
-  margin-bottom: 0;
 }
 
 h1,
@@ -95,9 +92,9 @@ p {
 
 h1 {
   max-width: 720px;
-  margin-bottom: 14px;
-  font-size: clamp(2.25rem, 5vw, 4.6rem);
-  line-height: 0.98;
+  margin-bottom: 0;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1;
   letter-spacing: 0;
 }
 
@@ -121,7 +118,7 @@ h1 {
 
 .summary-strip div {
   min-width: 0;
-  padding: 18px;
+  padding: 14px 16px;
   border-right: 1px solid var(--line);
 }
 
@@ -131,14 +128,14 @@ h1 {
 
 .summary-strip strong {
   display: block;
-  font-size: 1.55rem;
+  font-size: 1.2rem;
 }
 
 .summary-strip span {
   display: block;
-  margin-top: 4px;
+  margin-top: 2px;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
 }
 
 .workspace {
@@ -156,11 +153,11 @@ h1 {
 }
 
 .panel-heading {
-  padding: 22px 22px 0;
+  padding: 18px 18px 0;
 }
 
 .panel-heading h2 {
-  margin-bottom: 6px;
+  margin-bottom: 0;
   font-size: 1.2rem;
 }
 
@@ -173,7 +170,7 @@ h1 {
 .capture-form,
 .capture-list,
 .search {
-  padding: 22px;
+  padding: 18px;
 }
 
 .field {
@@ -230,7 +227,7 @@ button {
   border: 0;
   border-radius: 8px;
   background: var(--accent);
-  color: white;
+  color: var(--button-ink);
   cursor: pointer;
   font: inherit;
   font-weight: 800;
@@ -315,7 +312,7 @@ button:disabled {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding: 0 22px 22px;
+  padding: 0 18px 18px;
 }
 
 .status-tabs a,

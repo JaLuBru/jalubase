@@ -1,6 +1,7 @@
 import { CaptureForm } from "@/app/capture-form";
 import { changeCaptureStatus } from "@/app/actions";
 import { ThemeToggle } from "@/app/theme-toggle";
+import { cookies } from "next/headers";
 import { listCaptures } from "@/lib/captures";
 import type { CaptureStatus } from "@/lib/types";
 
@@ -26,6 +27,9 @@ function labelFromValue(value: string) {
 
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
+  const cookieStore = await cookies();
+  const savedTheme = cookieStore.get("theme")?.value;
+  const theme = savedTheme === "light" ? "light" : "dark";
   const query = params?.q?.trim() ?? "";
   const status = parseStatus(params?.status);
   const captures = await listCaptures(query, status);
@@ -35,30 +39,22 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <main>
       <section className="intro">
-        <div>
-          <div className="topline">
-            <p className="eyebrow">Personal Dashboard</p>
-            <ThemeToggle />
-          </div>
-          <h1>Capture first. Remember on purpose.</h1>
-          <p className="lede">
-            A quiet place for thoughts, links, quotes, people notes, learning
-            plans, and anything else that should not vanish just because it is
-            out of sight.
-          </p>
+        <div className="topline">
+          <h1>Jalubase</h1>
+          <ThemeToggle initialTheme={theme} />
         </div>
         <div className="summary-strip" aria-label="Dashboard summary">
           <div>
             <strong>{captures.length}</strong>
-            <span>saved items</span>
+            <span>items</span>
           </div>
           <div>
             <strong>{inboxCount}</strong>
-            <span>in inbox</span>
+            <span>inbox</span>
           </div>
           <div>
             <strong>{resurfacingCount}</strong>
-            <span>set to resurface</span>
+            <span>resurface</span>
           </div>
         </div>
       </section>
@@ -66,24 +62,18 @@ export default async function Home({ searchParams }: HomeProps) {
       <section className="workspace">
         <div className="panel capture-panel">
           <div className="panel-heading">
-            <h2>Quick Capture</h2>
-            <p>Start messy. The system can help organize later.</p>
+            <h2>Capture</h2>
           </div>
           <CaptureForm />
         </div>
 
         <div className="panel">
           <div className="panel-heading">
-            <h2>Memory Inbox</h2>
-            <p>Recently saved items and anything matching your search.</p>
+            <h2>Memory</h2>
           </div>
 
           <form className="search" action="/">
-            <input
-              name="q"
-              defaultValue={query}
-              placeholder="Search notes, links, tags, quotes..."
-            />
+            <input name="q" defaultValue={query} placeholder="Search" />
             <input name="status" type="hidden" value={status} />
             <button type="submit">Search</button>
           </form>
@@ -149,11 +139,7 @@ export default async function Home({ searchParams }: HomeProps) {
               ))
             ) : (
               <div className="empty-state">
-                <h3>No captures yet</h3>
-                <p>
-                  Add the first thing you want to remember. A thought, a link, a
-                  person detail, a quote, or a learning note all count.
-                </p>
+                <h3>Empty</h3>
               </div>
             )}
           </div>

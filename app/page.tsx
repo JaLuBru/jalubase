@@ -127,6 +127,7 @@ export default async function Home({ searchParams }: HomeProps) {
                   ) : null}
                   <div className="card-actions">
                     <a href={`/captures/${capture.id}`}>Open</a>
+                    <a href={`/captures/${capture.id}/edit`}>Edit</a>
                     {capture.status !== "saved" ? (
                       <form action={changeCaptureStatus}>
                         <input name="id" type="hidden" value={capture.id} />

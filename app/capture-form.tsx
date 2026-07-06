@@ -26,7 +26,7 @@ export function CaptureForm() {
         <textarea
           id="body"
           name="body"
-          placeholder="Dictate or jot down anything you want to remember..."
+          placeholder="Write anything..."
           rows={7}
           required
         />

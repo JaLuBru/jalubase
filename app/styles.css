@@ -1,15 +1,41 @@
 :root {
+  color-scheme: light;
   --bg: #f7f4ef;
   --surface: #fffaf2;
   --surface-strong: #ffffff;
   --ink: #1f2933;
   --muted: #6b7280;
   --line: #ded8cf;
+  --field-label: #374151;
+  --body-copy: #4b5563;
+  --tag-bg: #edf7f5;
+  --tag-border: #cbd8d5;
+  --tag-ink: #245650;
   --accent: #126b62;
   --accent-strong: #0c4f49;
   --warn: #8a3d18;
   --ok: #217a3e;
   --shadow: 0 18px 60px rgba(31, 41, 51, 0.09);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #101416;
+  --surface: #171d20;
+  --surface-strong: #1f272b;
+  --ink: #eef3f1;
+  --muted: #a4b0ad;
+  --line: #334044;
+  --field-label: #d5dedb;
+  --body-copy: #c4cfcc;
+  --tag-bg: #203533;
+  --tag-border: #3f6762;
+  --tag-ink: #b9eee6;
+  --accent: #5fc7b8;
+  --accent-strong: #83ddcf;
+  --warn: #f2a86f;
+  --ok: #89dda2;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
 }
 
 * {
@@ -46,6 +72,18 @@ main {
   font-weight: 800;
   letter-spacing: 0;
   text-transform: uppercase;
+}
+
+.topline {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.topline .eyebrow {
+  margin-bottom: 0;
 }
 
 h1,
@@ -144,7 +182,7 @@ h1 {
 }
 
 label {
-  color: #374151;
+  color: var(--field-label);
   font-size: 0.84rem;
   font-weight: 700;
 }
@@ -203,6 +241,19 @@ button:hover {
   background: var(--accent-strong);
 }
 
+.theme-toggle {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--ink);
+  padding: 0 14px;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
 button:disabled {
   cursor: wait;
   opacity: 0.7;
@@ -256,10 +307,10 @@ button:disabled {
 
 .capture-meta span,
 .tags span {
-  border: 1px solid #cbd8d5;
+  border: 1px solid var(--tag-border);
   border-radius: 999px;
-  background: #edf7f5;
-  color: #245650;
+  background: var(--tag-bg);
+  color: var(--tag-ink);
   font-size: 0.78rem;
   font-weight: 700;
   padding: 5px 9px;
@@ -274,7 +325,7 @@ button:disabled {
 
 .capture-card p,
 .empty-state p {
-  color: #4b5563;
+  color: var(--body-copy);
   line-height: 1.6;
   white-space: pre-wrap;
 }

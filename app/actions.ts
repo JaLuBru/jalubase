@@ -8,6 +8,7 @@ import {
   captureUpdateSchema,
   deleteCapture,
   updateCapture,
+  updateCaptureResurface,
   updateCaptureStatus
 } from "@/lib/captures";
 import type { CaptureStatus } from "@/lib/types";
@@ -98,4 +99,35 @@ export async function deleteCaptureAndReturn(formData: FormData) {
   await deleteCapture(id);
   revalidatePath("/");
   redirect("/");
+}
+
+export async function changeCaptureResurface(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const preset = String(formData.get("preset") ?? "");
+
+  if (!id) {
+    return;
+  }
+
+  const now = new Date();
+  const next = new Date(now);
+
+  if (preset === "tomorrow") {
+    next.setDate(now.getDate() + 1);
+  } else if (preset === "week") {
+    next.setDate(now.getDate() + 7);
+  } else if (preset === "month") {
+    next.setMonth(now.getMonth() + 1);
+  } else if (preset === "clear") {
+    await updateCaptureResurface(id, null);
+    revalidatePath("/");
+    revalidatePath(`/captures/${id}`);
+    return;
+  } else {
+    return;
+  }
+
+  await updateCaptureResurface(id, next.toISOString().slice(0, 10));
+  revalidatePath("/");
+  revalidatePath(`/captures/${id}`);
 }

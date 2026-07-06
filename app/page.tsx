@@ -1,8 +1,9 @@
 import { CaptureForm } from "@/app/capture-form";
 import { changeCaptureStatus } from "@/app/actions";
+import { ResurfaceActions } from "@/app/resurface-actions";
 import { ThemeToggle } from "@/app/theme-toggle";
 import { cookies } from "next/headers";
-import { listCaptures } from "@/lib/captures";
+import { listCaptures, listDueCaptures } from "@/lib/captures";
 import type { CaptureStatus } from "@/lib/types";
 
 type HomeProps = {
@@ -32,9 +33,11 @@ export default async function Home({ searchParams }: HomeProps) {
   const theme = savedTheme === "light" ? "light" : "dark";
   const query = params?.q?.trim() ?? "";
   const status = parseStatus(params?.status);
-  const captures = await listCaptures(query, status);
+  const [captures, dueCaptures] = await Promise.all([
+    listCaptures(query, status),
+    listDueCaptures()
+  ]);
   const inboxCount = captures.filter((capture) => capture.status === "inbox").length;
-  const resurfacingCount = captures.filter((capture) => capture.resurface_on).length;
 
   return (
     <main>
@@ -53,7 +56,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <span>inbox</span>
           </div>
           <div>
-            <strong>{resurfacingCount}</strong>
+            <strong>{dueCaptures.length}</strong>
             <span>resurface</span>
           </div>
         </div>
@@ -71,6 +74,19 @@ export default async function Home({ searchParams }: HomeProps) {
           <div className="panel-heading">
             <h2>Memory</h2>
           </div>
+
+          {dueCaptures.length ? (
+            <section className="due-strip" aria-label="Due resurfacing items">
+              {dueCaptures.map((capture) => (
+                <article key={capture.id} className="due-item">
+                  <a href={`/captures/${capture.id}`}>
+                    {capture.title || capture.body.slice(0, 80)}
+                  </a>
+                  <ResurfaceActions id={capture.id} compact />
+                </article>
+              ))}
+            </section>
+          ) : null}
 
           <form className="search" action="/">
             <input name="q" defaultValue={query} placeholder="Search" />

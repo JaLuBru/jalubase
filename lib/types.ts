@@ -23,6 +23,7 @@ export const domains = [
 
 export type CaptureType = (typeof captureTypes)[number];
 export type Domain = (typeof domains)[number];
+export type CaptureStatus = "inbox" | "saved" | "archived";
 
 export type Capture = {
   id: string;
@@ -33,7 +34,7 @@ export type Capture = {
   source: string;
   source_url: string | null;
   tags: string[];
-  status: "inbox" | "saved" | "archived";
+  status: CaptureStatus;
   resurface_on: string | null;
   created_at: string;
   updated_at: string;

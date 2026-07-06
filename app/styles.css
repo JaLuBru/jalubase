@@ -241,6 +241,17 @@ button:hover {
   background: var(--accent-strong);
 }
 
+.secondary-button {
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--ink);
+}
+
+.secondary-button:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
 .theme-toggle {
   min-height: 34px;
   border: 1px solid var(--line);
@@ -290,6 +301,33 @@ button:disabled {
   padding-top: 0;
 }
 
+.status-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 22px 22px;
+}
+
+.status-tabs a,
+.back-link {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 800;
+  padding: 8px 12px;
+  text-decoration: none;
+  text-transform: capitalize;
+}
+
+.status-tabs a.active,
+.status-tabs a:hover,
+.back-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .capture-card,
 .empty-state {
   border: 1px solid var(--line);
@@ -335,11 +373,86 @@ button:disabled {
   font-weight: 800;
 }
 
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.card-actions a {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 800;
+  min-height: 42px;
+  padding: 10px 14px;
+  text-decoration: none;
+}
+
+.card-actions a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 14px;
+}
+
+.detail-page {
+  width: min(880px, calc(100% - 32px));
+}
+
+.detail-panel {
+  margin-top: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 28px;
+}
+
+.detail-panel h1 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+}
+
+.detail-body {
+  color: var(--body-copy);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+
+.detail-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 24px 0 0;
+}
+
+.detail-list div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  padding: 14px;
+}
+
+.detail-list dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.detail-list dd {
+  margin: 0;
+  color: var(--ink);
 }
 
 @media (max-width: 900px) {
@@ -377,5 +490,9 @@ button:disabled {
   .form-footer {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .detail-list {
+    grid-template-columns: 1fr;
   }
 }

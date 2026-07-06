@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { changeCaptureStatusAndReturn } from "@/app/actions";
+import { DeleteCaptureButton } from "@/app/delete-capture-button";
 import { getCapture } from "@/lib/captures";
 
 type CaptureDetailProps = {
@@ -67,6 +68,7 @@ export default async function CaptureDetail({ params }: CaptureDetailProps) {
         </dl>
 
         <div className="card-actions">
+          <a href={`/captures/${capture.id}/edit`}>Edit</a>
           {capture.status !== "saved" ? (
             <form action={changeCaptureStatusAndReturn}>
               <input name="id" type="hidden" value={capture.id} />
@@ -92,6 +94,7 @@ export default async function CaptureDetail({ params }: CaptureDetailProps) {
               </button>
             </form>
           ) : null}
+          <DeleteCaptureButton id={capture.id} />
         </div>
       </article>
     </main>

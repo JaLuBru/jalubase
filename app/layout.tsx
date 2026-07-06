@@ -21,12 +21,9 @@ export default async function RootLayout({
         .split("; ")
         .find((row) => row.startsWith("theme="))
         ?.split("=")[1];
-      const storedTheme = window.localStorage.getItem("theme");
       const theme = cookieTheme === "dark" || cookieTheme === "light"
         ? cookieTheme
-        : storedTheme === "dark" || storedTheme === "light"
-          ? storedTheme
-          : "${theme}";
+        : "${theme}";
       document.documentElement.dataset.theme = theme;
     } catch {
       document.documentElement.dataset.theme = "${theme}";

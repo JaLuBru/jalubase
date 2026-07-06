@@ -4,27 +4,21 @@ import { useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
 
-function getInitialTheme(): Theme {
-  if (typeof window === "undefined") return "light";
+type ThemeToggleProps = {
+  initialTheme: Theme;
+};
 
-  const saved = window.localStorage.getItem("theme");
-  if (saved === "dark" || saved === "light") return saved;
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+function saveTheme(theme: Theme) {
+  document.documentElement.dataset.theme = theme;
+  window.localStorage.setItem("theme", theme);
+  document.cookie = `theme=${theme}; path=/; max-age=31536000; samesite=lax`;
 }
 
-export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
+export function ThemeToggle({ initialTheme }: ThemeToggleProps) {
+  const [theme, setTheme] = useState<Theme>(initialTheme);
 
   useEffect(() => {
-    setTheme(getInitialTheme());
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("theme", theme);
+    saveTheme(theme);
   }, [theme]);
 
   const nextTheme = theme === "dark" ? "light" : "dark";

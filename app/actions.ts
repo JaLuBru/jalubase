@@ -5,6 +5,9 @@ import { redirect } from "next/navigation";
 import {
   createCapture,
   captureInputSchema,
+  captureUpdateSchema,
+  deleteCapture,
+  updateCapture,
   updateCaptureStatus
 } from "@/lib/captures";
 import type { CaptureStatus } from "@/lib/types";
@@ -59,5 +62,40 @@ export async function changeCaptureStatus(formData: FormData) {
 
 export async function changeCaptureStatusAndReturn(formData: FormData) {
   await changeCaptureStatus(formData);
+  redirect("/");
+}
+
+export async function saveCaptureEdits(formData: FormData) {
+  const parsed = captureUpdateSchema.safeParse({
+    id: formData.get("id"),
+    title: formData.get("title"),
+    body: formData.get("body"),
+    captureType: formData.get("captureType") || "raw_thought",
+    domain: formData.get("domain") || "things_to_remember",
+    sourceUrl: formData.get("sourceUrl"),
+    tags: formData.get("tags"),
+    resurfaceOn: formData.get("resurfaceOn")
+  });
+
+  if (!parsed.success) {
+    return;
+  }
+
+  await updateCapture(parsed.data);
+  revalidatePath("/");
+  revalidatePath(`/captures/${parsed.data.id}`);
+  revalidatePath(`/captures/${parsed.data.id}/edit`);
+  redirect(`/captures/${parsed.data.id}`);
+}
+
+export async function deleteCaptureAndReturn(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+
+  if (!id) {
+    return;
+  }
+
+  await deleteCapture(id);
+  revalidatePath("/");
   redirect("/");
 }

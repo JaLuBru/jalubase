@@ -8,7 +8,7 @@ services:
     environment:
       DATABASE_URL: postgres://dashboard:dashboard@db:5432/personal_dashboard
     ports:
-      - "3000:3000"
+      - "${APP_PORT:-3000}:3000"
     restart: unless-stopped
 
   db:

@@ -1,4 +1,5 @@
 import { CaptureForm } from "@/app/capture-form";
+import { ThemeToggle } from "@/app/theme-toggle";
 import { listCaptures } from "@/lib/captures";
 
 type HomeProps = {
@@ -31,7 +32,10 @@ export default async function Home({ searchParams }: HomeProps) {
     <main>
       <section className="intro">
         <div>
-          <p className="eyebrow">Personal Dashboard</p>
+          <div className="topline">
+            <p className="eyebrow">Personal Dashboard</p>
+            <ThemeToggle />
+          </div>
           <h1>Capture first. Remember on purpose.</h1>
           <p className="lede">
             A quiet place for thoughts, links, quotes, people notes, learning

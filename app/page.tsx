@@ -1,10 +1,13 @@
 import { CaptureForm } from "@/app/capture-form";
+import { changeCaptureStatus } from "@/app/actions";
 import { ThemeToggle } from "@/app/theme-toggle";
 import { listCaptures } from "@/lib/captures";
+import type { CaptureStatus } from "@/lib/types";
 
 type HomeProps = {
   searchParams?: Promise<{
     q?: string;
+    status?: string;
   }>;
 };
 
@@ -24,7 +27,8 @@ function labelFromValue(value: string) {
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const query = params?.q?.trim() ?? "";
-  const captures = await listCaptures(query);
+  const status = parseStatus(params?.status);
+  const captures = await listCaptures(query, status);
   const inboxCount = captures.filter((capture) => capture.status === "inbox").length;
   const resurfacingCount = captures.filter((capture) => capture.resurface_on).length;
 
@@ -80,8 +84,21 @@ export default async function Home({ searchParams }: HomeProps) {
               defaultValue={query}
               placeholder="Search notes, links, tags, quotes..."
             />
+            <input name="status" type="hidden" value={status} />
             <button type="submit">Search</button>
           </form>
+
+          <nav className="status-tabs" aria-label="Capture status filters">
+            {(["inbox", "saved", "archived", "all"] as const).map((item) => (
+              <a
+                key={item}
+                className={status === item ? "active" : ""}
+                href={`/?status=${item}${query ? `&q=${encodeURIComponent(query)}` : ""}`}
+              >
+                {labelFromValue(item)}
+              </a>
+            ))}
+          </nav>
 
           <div className="capture-list">
             {captures.length ? (
@@ -108,6 +125,25 @@ export default async function Home({ searchParams }: HomeProps) {
                       ))}
                     </div>
                   ) : null}
+                  <div className="card-actions">
+                    <a href={`/captures/${capture.id}`}>Open</a>
+                    {capture.status !== "saved" ? (
+                      <form action={changeCaptureStatus}>
+                        <input name="id" type="hidden" value={capture.id} />
+                        <input name="status" type="hidden" value="saved" />
+                        <button type="submit">Save</button>
+                      </form>
+                    ) : null}
+                    {capture.status !== "archived" ? (
+                      <form action={changeCaptureStatus}>
+                        <input name="id" type="hidden" value={capture.id} />
+                        <input name="status" type="hidden" value="archived" />
+                        <button type="submit" className="secondary-button">
+                          Archive
+                        </button>
+                      </form>
+                    ) : null}
+                  </div>
                 </article>
               ))
             ) : (
@@ -124,4 +160,12 @@ export default async function Home({ searchParams }: HomeProps) {
       </section>
     </main>
   );
+}
+
+function parseStatus(value?: string): CaptureStatus | "all" {
+  if (value === "saved" || value === "archived" || value === "all") {
+    return value;
+  }
+
+  return "inbox";
 }

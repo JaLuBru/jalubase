@@ -83,6 +83,19 @@ http://localhost:3000
 
 PostgreSQL data is stored in the `dashboard_postgres` Docker volume.
 
+If port `3000` is already in use on the host, choose another host port:
+
+```powershell
+$env:APP_PORT=3001
+docker compose up --build
+```
+
+On Linux:
+
+```bash
+APP_PORT=3001 docker compose up --build -d
+```
+
 ## Future Homelab Flow
 
 The intended Proxmox flow:
@@ -90,7 +103,7 @@ The intended Proxmox flow:
 1. Push changes to GitHub.
 2. SSH into the server.
 3. Pull the latest code.
-4. Run `docker compose up --build -d`.
+4. Run `APP_PORT=3001 docker compose up --build -d` if port `3000` is already busy, otherwise run `docker compose up --build -d`.
 
 Later, this can be automated with a deploy script or a small webhook service.
 

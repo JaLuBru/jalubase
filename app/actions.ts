@@ -1,7 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createCapture, captureInputSchema } from "@/lib/captures";
+import { redirect } from "next/navigation";
+import {
+  createCapture,
+  captureInputSchema,
+  updateCaptureStatus
+} from "@/lib/captures";
+import type { CaptureStatus } from "@/lib/types";
 
 export type CaptureFormState = {
   ok: boolean;
@@ -36,4 +42,22 @@ export async function saveCapture(
     ok: true,
     message: "Saved to your capture inbox."
   };
+}
+
+export async function changeCaptureStatus(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const status = String(formData.get("status") ?? "") as CaptureStatus;
+
+  if (!id || !["inbox", "saved", "archived"].includes(status)) {
+    return;
+  }
+
+  await updateCaptureStatus(id, status);
+  revalidatePath("/");
+  revalidatePath(`/captures/${id}`);
+}
+
+export async function changeCaptureStatusAndReturn(formData: FormData) {
+  await changeCaptureStatus(formData);
+  redirect("/");
 }
